@@ -1,0 +1,36 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+scalar JSON @scalar(class: "App\\GraphQL\\Scalars\\JSON")
+
+type Query {
+    author(
+      id: ID @eq
+      name: String @eq
+    ): Author @find
+
+    authors(name: String @where(operator: "like")): [Author!]! @paginate(defaultCount: 20)
+
+    books(title: String @where(operator: "like")): [Book!]! @paginate(defaultCount: 20)
+}
+
+type Author {
+    id: ID!
+    books: [Book!]! @hasMany
+    name: String!
+    surname: String!
+    alias: String!
+    biography: String!
+    birthdate: Date!
+    enabled: Boolean!
+}
+
+type Book {
+  id: ID
+  author: Author @belongsTo
+  title: String! @someMiddleware
+  description: JSON
+  price: String!
+  rating: Int
+  release_year: Date!
+  enabled: Boolean!
+}
